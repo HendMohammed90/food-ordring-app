@@ -1,10 +1,10 @@
-import React from 'react'
 import Link from '../link'
+import { Routes } from '@/constants/enums'
 
 const Header = () => {
     return (
         <div className='container flex h-16 items-center justify-between '>
-            <Link href={'/'}>Pizza</Link>
+            <Link href={Routes.ROOT}> 🍕 Pizza</Link>
         </div>
     )
 }
