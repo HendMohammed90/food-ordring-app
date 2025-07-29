@@ -1,8 +1,9 @@
+'use client'
+
 import { Button, buttonVariants } from "../ui/button"
 import Image from "next/image"
 import {
     Dialog,
-    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -15,8 +16,12 @@ import {
     RadioGroup,
     RadioGroupItem,
 } from "@/components/ui/radio-group"
+import { formatCurrency } from "@/lib/formatters"
+import { useState } from "react"
+import { Checkbox } from "../ui/checkbox"
 
 const addToCart = ({ item }: { item: any }) => {
+    const [selectedExtras, setSelectedExtras] = useState([]);
 
     const sizes = [
         {
@@ -35,6 +40,24 @@ const addToCart = ({ item }: { item: any }) => {
             price: 20,
         },
     ]
+
+    const extras = [
+        {
+            id: crypto.randomUUID(),
+            name: 'Small',
+            price: 0,
+        },
+        {
+            id: crypto.randomUUID(),
+            name: 'Medium',
+            price: 4,
+        },
+        {
+            id: crypto.randomUUID(),
+            name: 'Large',
+            price: 8,
+        },
+    ]
     return (
         <Dialog>
             <form>
@@ -50,7 +73,7 @@ const addToCart = ({ item }: { item: any }) => {
 
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto'">
+                <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto'">
                     <DialogHeader className='flex items-center'>
                         <Image src={item.image} alt={item.name} width={200} height={200} />
                         <DialogTitle>Edit Order</DialogTitle>
@@ -64,34 +87,25 @@ const addToCart = ({ item }: { item: any }) => {
                             <Label htmlFor='pick-size'>Pick your size</Label>
                             <PickSize
                                 sizes={sizes}
-                            />
-                        </div>
-                        {/* <div className='space-y-4 text-center'>
-                            <Label htmlFor='pick-size'>Pick your size</Label>
-                            <PickSize
-                                sizes={item.sizes}
                                 item={item}
-                                selectedSize={selectedSize}
-                                setSelectedSize={setSelectedSize}
                             />
                         </div>
                         <div className='space-y-4 text-center'>
                             <Label htmlFor='add-extras'>Any extras?</Label>
                             <Extras
-                                extras={item.extras}
+                                extras={extras}
                                 selectedExtras={selectedExtras}
                                 setSelectedExtras={setSelectedExtras}
                             />
-                        </div> */}
+                        </div>
                     </div>
 
-
                     <DialogFooter>
-                        <DialogClose asChild>
-                            <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                        <Button type="submit">Save changes</Button>
+                        <Button variant="outline" className={`${buttonVariants({
+                                size: 'lg', variant: 'outline'
+                            })} space-x-2 !px-8 !rounded-full w-full uppercase bg-chart-5 text-background hover:text-background hover:bg-chart-1 cursor-pointer`}>Add to cart</Button>
                     </DialogFooter>
+
                 </DialogContent>
             </form>
         </Dialog>
@@ -105,15 +119,31 @@ export default addToCart
 
 
 
-function PickSize({ sizes }: { sizes: any }) {
+function PickSize({ sizes, item }: { sizes: any, item: any }) {
     return (
         <RadioGroup defaultValue="comfortable">
             {sizes.map((size: any) => (
                 <div className="flex items-center gap-3" key={size.id}>
                     <RadioGroupItem value={size.id} id={size.id} />
-                    <Label htmlFor={size.id}>{size.name}</Label>
+                    <Label htmlFor={size.id}>{size.name} {formatCurrency(size.price + item.basePrice)}</Label>
                 </div>
             ))}
         </RadioGroup>
+    )
+}
+
+
+function Extras({ extras, selectedExtras, setSelectedExtras }: { extras: any, selectedExtras: any, setSelectedExtras: any }) {
+    return (
+        extras.map((extra: any) => (
+            <div key={extra.id} className="flex items-center space-x-2  rounded-md" >
+                <Checkbox id={extra.id} />
+                <Label htmlFor={extra.id}
+                    className="text-sm text-black font-medium leading-none peer-disabled:cursor-not-allowed">
+                    {extra.name}
+                </Label>
+            </div>
+        ))
+
     )
 }
