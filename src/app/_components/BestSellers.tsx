@@ -1,41 +1,12 @@
 import MainHeading from "@/components/main-heading"
 import Menu from "@/components/menu"
-import { formatCurrency } from "@/lib/formatters"
-import Image from "next/image"
 
 
-const BestSellers = () => {
 
-    const bestSellerData = [
-        {
-            id: crypto.randomUUID(),
-            name: 'Pizza',
-            description: 'This is a Pizza description',
-            basePrice: 10,
-            image: '/assets/images/pizza-hero.png'
-        },
-        {
-            id: crypto.randomUUID(),
-            name: 'Burger',
-            description: 'This is a Burger description',
-            basePrice: 10,
-            image: '/assets/images/pizza-hero.png'
-        },
-        {
-            id: crypto.randomUUID(),
-            name: 'Sandwich',
-            description: 'This is a Sandwich description',
-            basePrice: 10,
-            image: '/assets/images/pizza-hero.png'
-        },
-        {
-            id: crypto.randomUUID(),
-            name: 'Pasta',
-            description: 'This is a Pasta description',
-            basePrice: 10,
-            image: '/assets/images/pizza-hero.png'
-        }
-    ]
+
+const BestSellers = async ({ bestSellerData }: { bestSellerData: any }) => {
+
+    // console.log(bestSellerData)
 
     return (
         <section>
