@@ -4,18 +4,22 @@ import { db } from "@/lib/prisma";
 
 export default async function Home() {
   try {
+
+    const data = await db.size.findMany({});
+    // console.log(`✅ Successfully connected to database. Found ${data} sizes.`);
+
     const products = await db.product.findMany({
       take: 3, // Only get first 4 products for the home page
       orderBy: {
         order: 'asc'
       }
     });
-    console.log(`✅ Successfully connected to database. Found ${products.length} products.`);
+    // console.log(`✅ Successfully connected to database. Found ${products.length} products.`);
 
     return (
       <main className="p-8">
         <Hero />
-        <BestSellers bestSellerData={products}/>
+        <BestSellers bestSellerData={products} />
       </main>
     );
   } catch (error) {
@@ -24,7 +28,7 @@ export default async function Home() {
     return (
       <main className="p-8">
         <Hero />
-        <BestSellers bestSellerData={[]}/>
+        <BestSellers bestSellerData={[]} />
       </main>
     );
   }
