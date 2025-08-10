@@ -21,6 +21,20 @@ const BestSellers = async ({ bestSellerData }: { bestSellerData: any }) => {
 
     // console.log(size)
 
+    // const extraData = await db.extra.create({
+    //     data: {
+    //         name: "CHEESE",
+    //         price: 1,
+    //         Product: {
+    //             connect: {
+    //                 id: "cme14g8dp00003ei0n93c36tr"
+    //             }
+    //         }
+    //     }
+    // });
+
+    // console.log(extraData);
+
     return (
         <section>
             <div className="container">

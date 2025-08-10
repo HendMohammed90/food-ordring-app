@@ -24,6 +24,7 @@ model Product {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   sizes       Size[]
+  extras      Extra[]
 }
 
 enum ProductSize {
@@ -35,6 +36,26 @@ enum ProductSize {
 model Size{
   id          String         @id @default(cuid())
   name        ProductSize
+  Product     Product        @relation(fields: [productId], references: [id])
+  productId   String
+  price       Float
+}
+
+enum ExtraIngredients {
+CHEESE
+BACON
+TOMATOES
+ONIONS
+PEPPERS
+PEPPERONI
+SAUSAGE
+MUSHROOMS
+OLIVES
+}
+
+model Extra{
+  id          String         @id @default(cuid())
+  name        ExtraIngredients
   Product     Product        @relation(fields: [productId], references: [id])
   productId   String
   price       Float
