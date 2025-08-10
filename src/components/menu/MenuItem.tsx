@@ -1,9 +1,10 @@
 import { formatCurrency } from "@/lib/formatters"
 import Image from 'next/image';
 import AddToCart from "./addToCart";
+import { ProductWithRelations } from "@/types/product";
 
 
-const MenuItem = ({ item }: { item: any }) => {
+const MenuItem = ({ item }: { item: ProductWithRelations }) => {
     return (
         <li key={item.id}>
             <div className="relative w-48 h-48 mx-auto">

@@ -12,7 +12,11 @@ export default async function Home() {
       take: 3, // Only get first 4 products for the home page
       orderBy: {
         order: 'asc'
-      }
+      },
+      include: {
+        sizes: true,
+        extras: true,
+      },
     });
     // console.log(`✅ Successfully connected to database. Found ${products.length} products.`);
 

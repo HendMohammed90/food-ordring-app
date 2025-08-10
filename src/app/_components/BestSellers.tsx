@@ -1,11 +1,10 @@
 import MainHeading from "@/components/main-heading"
 import Menu from "@/components/menu"
 import { db } from "@/lib/prisma";
+import { ProductWithRelations } from "@/types/product";
 
 
-
-
-const BestSellers = async ({ bestSellerData }: { bestSellerData: any }) => {
+const BestSellers = async ({ bestSellerData }: { bestSellerData: ProductWithRelations[] }) => {
 
     // const size = await db.size.create({
     //     data: {
