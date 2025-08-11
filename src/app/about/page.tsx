@@ -63,12 +63,13 @@
 //   );
 // }
 
+import About from '@/components/about'
 import React from 'react'
 
-const page = () => {
+const AboutPage = () => {
   return (
-    <div>AboutPage</div>
+    <About/>
   )
 }
 
-export default page
+export default AboutPage
