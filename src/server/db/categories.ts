@@ -6,7 +6,7 @@ export const getCategories = cache(
         return db.category.findMany({
             include: {
                 products: {
-                    take: 3, // Limit to 3 products per category
+                    take: 4, // Limit to 4 products per category
                     include: {
                         sizes: true,    // Include all related sizes
                         extras: true    // Include all related extras
@@ -20,4 +20,10 @@ export const getCategories = cache(
                 order: 'asc'
             }
         });
-    }, ['categories'], { revalidate: 60 });
+    },
+    ['categories'],
+    {
+        revalidate: 60,
+        tags: ['categories']
+    }
+);
