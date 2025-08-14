@@ -6,11 +6,8 @@ import React from 'react'
 const CartButton = () => {
     return (
         <Link href={`/${Routes.CART}`} className='relative block group'>
-            {/* <button className="bg-chart-5 text-background px-4 py-2 rounded hover:bg-chart-1 hover:text-background">
-                View Cart
-            </button> */}
-            <span>3</span>
-            <ShoppingCart className="!w-6 !h-6" />
+            <span className='absolute -top-4 start-4 w-5 h-5 text-sm bg-chart-1 rounded-full text-accent text-center'>3</span>
+            <ShoppingCart className="!w-6 !h-6 text-primary group-hover:text-chart-1 duration-200 transition-colors" />
         </Link>
     )
 }

@@ -5,6 +5,7 @@ import Link from "../link"
 import { Button, buttonVariants } from "../ui/button"
 import { useState } from "react"
 import { Menu, XIcon } from "lucide-react"
+import CartButton from "./cart-button"
 
 const Navbar = () => {
     const [openMenu, setOpenMenu] = useState(false);
@@ -20,7 +21,7 @@ const Navbar = () => {
         }
     ]
     return (
-        <nav className="flex gap-4">
+        <nav className="flex gap-4 justify-center items-center">
             <Button
                 variant={'secondary'}
                 size={'sm'}
@@ -48,6 +49,7 @@ const Navbar = () => {
                     </li>
                 ))}
             </ul>
+            <CartButton />
         </nav>
     )
 }
