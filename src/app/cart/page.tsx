@@ -5,23 +5,25 @@ import { useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import React from 'react'
 import { useDispatch } from 'react-redux';
-import { clearCart, removeFromCart } from '@/redux/cartSlice';
+import { clearCart, removeFromCart, selectCartItems } from '@/redux/cartSlice';
 import { Routes } from '@/constants/enums';
 import MainHeading from '@/components/main-heading';
+import CartItems from './_components/CartItems';
+import CheckoutForm from './_components/CheckoutForm';
+import { useAppSelector } from '@/redux/hooks';
 
 const CartPage = () => {
-    const cart = useSelector((state: RootState) => state.cart.items);
-    const dispatch = useDispatch<AppDispatch>();
+    // const dispatch = useDispatch<AppDispatch>();
     return (
         <main>
             <section className='section-gap' id={Routes.CART}>
                 <div className='container'>
                     <MainHeading subTitle="your order is here" title="Shopping Cart" />
-                    {cart.length === 0 ? (
+                    {/* {cartData.length === 0 ? (
                         <p>Your cart is empty 🛒</p>
                     ) : (
                         <>
-                            {cart.map((item) => (
+                            {cartData.map((item) => (
                                 <div
                                     key={item.id}
                                     className="flex justify-between items-center border-b py-2"
@@ -48,7 +50,12 @@ const CartPage = () => {
                                 Clear Cart
                             </button>
                         </>
-                    )}
+                    )} */}
+                    <p>Your cart is empty 🛒</p>
+                    <div className='grid grid-cols-1 lg:grid-cols-2 gap-10'>
+                        <CartItems />
+                        <CheckoutForm />
+                    </div>
                 </div>
             </section>
         </main >
