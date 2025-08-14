@@ -19,12 +19,34 @@ import {
 import { formatCurrency } from "@/lib/formatters"
 import { useState } from "react"
 import { Checkbox } from "../ui/checkbox"
-import { Extra, Product, Size } from "../../../prisma/generated/prisma"
+import { Extra, Product, Size, ProductSize } from "../../../prisma/generated/prisma"
 import { ProductWithRelations } from "@/types/product"
+import { useAppSelector } from "@/redux/hooks"
+import { selectCartItems } from "@/redux/cartSlice"
 
 
 const addToCart = ({ item }: { item: ProductWithRelations }) => {
-    const [selectedExtras, setSelectedExtras] = useState([]);
+    const cart = useAppSelector(selectCartItems);
+
+    const defaultSize = cart.find((element) => element.id === item.id)?.size
+        || item.sizes.find((size) => size.name === ProductSize.SMALL);
+    const defaultExtras =
+        cart.find((element) => element.id === item.id)?.extraIngredients || [];
+    const [selectedSize, setSelectedSize] = useState<Size>(defaultSize!);
+    const [selectedExtras, setSelectedExtras] = useState<Extra[]>(defaultExtras);
+
+    let totalPrice = item.basePrice;
+
+    if (selectedSize) {
+        totalPrice += selectedSize.price;
+    }
+
+    if (selectedExtras.length > 0) {
+        for( const extra of selectedExtras){
+            totalPrice+= extra.price
+        }
+    }
+
     return (
         <Dialog>
             <form>
@@ -55,6 +77,8 @@ const addToCart = ({ item }: { item: ProductWithRelations }) => {
                             <PickSize
                                 sizes={item.sizes}
                                 item={item}
+                                selectedSize={selectedSize}
+                                setSelectedSize={setSelectedSize}
                             />
                         </div>
                         <div className='space-y-4 text-center'>
@@ -70,7 +94,7 @@ const addToCart = ({ item }: { item: ProductWithRelations }) => {
                     <DialogFooter>
                         <Button variant="outline" className={`${buttonVariants({
                             size: 'lg', variant: 'outline'
-                        })} space-x-2 !px-8 !rounded-full w-full uppercase bg-chart-5 text-background hover:text-background hover:bg-chart-1 cursor-pointer`}>Add to cart</Button>
+                        })} space-x-2 !px-8 !rounded-full w-full uppercase bg-chart-5 text-background hover:text-background hover:bg-chart-1 cursor-pointer`}>Add to cart {formatCurrency(totalPrice)}</Button>
                     </DialogFooter>
 
                 </DialogContent>
@@ -86,12 +110,18 @@ export default addToCart
 
 
 
-function PickSize({ sizes, item }: { sizes: Size[], item: Product }) {
+function PickSize({ sizes, item, selectedSize, setSelectedSize }:
+    {
+        sizes: Size[],
+        item: Product,
+        selectedSize: Size,
+        setSelectedSize: React.Dispatch<React.SetStateAction<Size>>;
+    }) {
     return (
         <RadioGroup defaultValue="comfortable">
             {sizes.map((size: Size) => (
                 <div className="flex flex-row items-center gap-3" key={size.id}>
-                    <RadioGroupItem value={size.id} id={size.id} />
+                    <RadioGroupItem value={selectedSize.name} checked={selectedSize.id === size.id} id={size.id} onClick={() => setSelectedSize(size)} />
                     <Label htmlFor={size.id}>{size.name} {formatCurrency(size.price + item.basePrice)}</Label>
                 </div>
             ))}
@@ -100,11 +130,25 @@ function PickSize({ sizes, item }: { sizes: Size[], item: Product }) {
 }
 
 
-function Extras({ extras, selectedExtras, setSelectedExtras }: { extras: Extra[], selectedExtras: any, setSelectedExtras: any }) {
+function Extras({ extras, selectedExtras, setSelectedExtras }:
+    {
+        extras: Extra[],
+        selectedExtras: Extra[],
+        setSelectedExtras: React.Dispatch<React.SetStateAction<Extra[]>>
+    }) {
+
+    const handelSelectedExtras = (extra: Extra) => {
+        if (selectedExtras.find((e) => e.id === extra.id)) {
+            const filteredSelectedExtras = selectedExtras.filter((item) => item.id !== extra.id);
+            setSelectedExtras(filteredSelectedExtras)
+        } else {
+            setSelectedExtras((prev) => [...prev, extra]);
+        }
+    }
     return (
         extras.map((extra: any) => (
             <div key={extra.id} className="flex items-center space-x-2  rounded-md" >
-                <Checkbox id={extra.id} />
+                <Checkbox id={extra.id} checked={Boolean(selectedExtras.find((e) => e.id === extra.id))} onClick={() => handelSelectedExtras(extra)} />
                 <Label htmlFor={extra.id}
                     className="text-sm text-black font-medium leading-none peer-disabled:cursor-not-allowed">
                     {extra.name} {formatCurrency(extra.price)}
