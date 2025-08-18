@@ -29,13 +29,25 @@ const cartSlice = createSlice({
         addToCart: (state, action: PayloadAction<CartItem>) => {
             const existing = state.items.find((i) => i.id === action.payload.id);
             if (existing) {
+                // existing.quantity = (existing.quantity ?? 0) + 1;
                 existing.quantity = (existing.quantity ?? 0) + (action.payload.quantity ?? 1);
+                existing.size = action.payload.size;
+                existing.extraIngredients = action.payload.extraIngredients;
             } else {
-                state.items.push(action.payload);
+                state.items.push({ ...action.payload, quantity: 1 });
             }
         },
-        removeFromCart: (state, action: PayloadAction<string>) => {
-            state.items = state.items.filter((i) => i.id !== action.payload);
+        removeFromCart: (state, action: PayloadAction<{id:string}>) => {
+            // state.items = state.items.filter((i) => i.id !== action.payload);
+            const existing = state.items.find((i) => i.id === action.payload.id);
+            if (existing) {
+                existing.quantity = (existing.quantity ?? 0) - 1;
+                if (existing.quantity === 0) {
+                    state.items = state.items.filter((i) => i.id !== action.payload.id);
+                }
+            }else{
+                state.items = state.items.filter((i) => i.id !== action.payload.id);
+            }
         },
         clearCart: (state) => {
             state.items = [];

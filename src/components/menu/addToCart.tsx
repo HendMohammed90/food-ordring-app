@@ -21,12 +21,15 @@ import { useState } from "react"
 import { Checkbox } from "../ui/checkbox"
 import { Extra, Product, Size, ProductSize } from "../../../prisma/generated/prisma"
 import { ProductWithRelations } from "@/types/product"
-import { useAppSelector } from "@/redux/hooks"
-import { selectCartItems } from "@/redux/cartSlice"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import { addToCart, clearCart, removeFromCart, selectCartItems } from "@/redux/cartSlice"
+import { AppDispatch } from "@/redux/store"
 
 
-const addToCart = ({ item }: { item: ProductWithRelations }) => {
+
+const AddToCart = ({ item }: { item: ProductWithRelations }) => {
     const cart = useAppSelector(selectCartItems);
+    const dispatch = useAppDispatch<AppDispatch>();
 
     const defaultSize = cart.find((element) => element.id === item.id)?.size
         || item.sizes.find((size) => size.name === ProductSize.SMALL);
@@ -42,9 +45,21 @@ const addToCart = ({ item }: { item: ProductWithRelations }) => {
     }
 
     if (selectedExtras.length > 0) {
-        for( const extra of selectedExtras){
-            totalPrice+= extra.price
+        for (const extra of selectedExtras) {
+            totalPrice += extra.price
         }
+    }
+
+    const handelAddToCart = () => {
+        dispatch(addToCart({
+            basePrice: item.basePrice,
+            id: item.id,
+            image: item.image,
+            name: item.name,
+            size: selectedSize,
+            extraIngredients: selectedExtras,
+        }))
+        console.log(cart)
     }
 
     return (
@@ -94,7 +109,9 @@ const addToCart = ({ item }: { item: ProductWithRelations }) => {
                     <DialogFooter>
                         <Button variant="outline" className={`${buttonVariants({
                             size: 'lg', variant: 'outline'
-                        })} space-x-2 !px-8 !rounded-full w-full uppercase bg-chart-5 text-background hover:text-background hover:bg-chart-1 cursor-pointer`}>Add to cart {formatCurrency(totalPrice)}</Button>
+                        })} space-x-2 !px-8 !rounded-full w-full uppercase bg-chart-5 text-background hover:text-background hover:bg-chart-1 cursor-pointer`}
+                            onClick={handelAddToCart}
+                        >Add to cart {formatCurrency(totalPrice)}</Button>
                     </DialogFooter>
 
                 </DialogContent>
@@ -103,7 +120,7 @@ const addToCart = ({ item }: { item: ProductWithRelations }) => {
     )
 }
 
-export default addToCart
+export default AddToCart
 
 
 
