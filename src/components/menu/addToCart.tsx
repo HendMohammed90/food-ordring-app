@@ -51,16 +51,17 @@ const AddToCart = ({ item }: { item: ProductWithRelations }) => {
     }
 
     const handelAddToCart = () => {
-        dispatch(addToCart({
-            basePrice: item.basePrice,
+        const payload = {
             id: item.id,
-            image: item.image,
             name: item.name,
+            basePrice: item.basePrice,
+            image: item.image,
             size: selectedSize,
             extraIngredients: selectedExtras,
-        }))
-        console.log(cart)
-    }
+        };
+        console.log("Dispatching addToCart with:", payload); // Debugging
+        dispatch(addToCart(payload));
+    };
 
     return (
         <Dialog>

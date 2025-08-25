@@ -27,17 +27,20 @@ const cartSlice = createSlice({
     initialState,
     reducers: {
         addToCart: (state, action: PayloadAction<CartItem>) => {
-            const existing = state.items.find((i) => i.id === action.payload.id);
-            if (existing) {
-                // existing.quantity = (existing.quantity ?? 0) + 1;
-                existing.quantity = (existing.quantity ?? 0) + (action.payload.quantity ?? 1);
-                existing.size = action.payload.size;
-                existing.extraIngredients = action.payload.extraIngredients;
+            console.log("Action payload before:", action.payload); // Debugging
+            const existingItem = state.items.find(
+                (item) => item.id === action.payload.id
+            );
+            if (existingItem) {
+                existingItem.quantity = (existingItem.quantity || 0) + 1;
+                existingItem.size = action.payload.size;
+                existingItem.extraIngredients = action.payload.extraIngredients;
             } else {
                 state.items.push({ ...action.payload, quantity: 1 });
             }
+            console.log("Action payload after:", action.payload); // Debugging
         },
-        removeFromCart: (state, action: PayloadAction<{id:string}>) => {
+        removeFromCart: (state, action: PayloadAction<{ id: string }>) => {
             // state.items = state.items.filter((i) => i.id !== action.payload);
             const existing = state.items.find((i) => i.id === action.payload.id);
             if (existing) {
@@ -45,7 +48,7 @@ const cartSlice = createSlice({
                 if (existing.quantity === 0) {
                     state.items = state.items.filter((i) => i.id !== action.payload.id);
                 }
-            }else{
+            } else {
                 state.items = state.items.filter((i) => i.id !== action.payload.id);
             }
         },
@@ -57,4 +60,8 @@ const cartSlice = createSlice({
 
 export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;
-export const selectCartItems = (state: RootState) => state.cart.items;
+// export const selectCartItems = (state: RootState) => state.cart.items;
+export const selectCartItems = (state: RootState) => {
+    console.log("Cart State:", state.cart.items);
+    return state.cart.items;
+};

@@ -1,23 +1,27 @@
+'use client'
+
 import { selectCartItems } from '@/redux/cartSlice';
 import { useAppSelector } from '@/redux/hooks';
-import React from 'react'
 import Image from 'next/image'
 import { formatCurrency } from '@/lib/formatters'
 import { Button } from '@/components/ui/button'
 import { Trash2 } from 'lucide-react'
 import { useAppDispatch } from '@/redux/hooks';
 import { removeFromCart } from '@/redux/cartSlice';
+import React, { use } from 'react';
+
 const CartItems = () => {
     const cartData = useAppSelector(selectCartItems);
-    // console.log(cartData)
-    const cart = useAppSelector(selectCartItems);
+    const cartdata =useAppSelector((state) => state.cart.items);
     const dispatch = useAppDispatch();
+    console.log(cartdata)
 
+    console.log("Cart Data:", cartData);
     return (
         <div>
-            {cart && cart.length > 0 ? (
+            {cartdata && cartdata.length > 0 ? (
                 <ul>
-                    {cartData.map((item) => (
+                    {cartdata.map((item) => (
                         <li key={item.id}>
                             <div className='flex flex-col md:flex-row gap-6 justify-between'>
                                 <div className='flex items-center gap-2'>

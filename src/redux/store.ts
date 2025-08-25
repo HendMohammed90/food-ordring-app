@@ -8,7 +8,8 @@ export const store = configureStore({
     reducer: {
         cart: cartReducer,
     },
-    devTools: process.env.NODE_ENV !== Environments.DEV,
+    // devTools: process.env.NODE_ENV !== Environments.DEV,
+    devTools: process.env.NODE_ENV !== "production", // Enable DevTools in non-production environments
 });
 
 // Types for use in components

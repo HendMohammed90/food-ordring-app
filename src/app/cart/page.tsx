@@ -1,10 +1,12 @@
-'use client'
+''
 
 import React from 'react'
 import { Routes } from '@/constants/enums';
 import MainHeading from '@/components/main-heading';
 import CartItems from './_components/CartItems';
 import CheckoutForm from './_components/CheckoutForm';
+
+
 
 const CartPage = () => {
     return (
