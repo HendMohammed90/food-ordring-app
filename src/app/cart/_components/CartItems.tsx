@@ -8,20 +8,18 @@ import { Button } from '@/components/ui/button'
 import { Trash2 } from 'lucide-react'
 import { useAppDispatch } from '@/redux/hooks';
 import { removeFromCart } from '@/redux/cartSlice';
-import React, { use } from 'react';
+import React from 'react';
 
 const CartItems = () => {
     const cartData = useAppSelector(selectCartItems);
-    const cartdata =useAppSelector((state) => state.cart.items);
     const dispatch = useAppDispatch();
-    console.log(cartdata)
 
-    console.log("Cart Data:", cartData);
+    // console.log("Cart Data:", cartData);
     return (
         <div>
-            {cartdata && cartdata.length > 0 ? (
+            {cartData && cartData.length > 0 ? (
                 <ul>
-                    {cartdata.map((item) => (
+                    {cartData.map((item) => (
                         <li key={item.id}>
                             <div className='flex flex-col md:flex-row gap-6 justify-between'>
                                 <div className='flex items-center gap-2'>
@@ -34,10 +32,10 @@ const CartItems = () => {
                                         />
                                     </div>
                                     <div>
-                                        <h4 className='font-semibold md:text-lg'>{item.name}</h4>
+                                        <h4 className='text-primary font-semibold md:text-lg'>{item.name}</h4>
                                         <div className='relative'>
                                             {item.size && (
-                                                <span className='text-sm text-accent'>
+                                                <span className='text-sm text-primary'>
                                                     Size: {item.size.name}
                                                 </span>
                                             )}
@@ -47,7 +45,7 @@ const CartItems = () => {
                                                     <ul>
                                                         {item.extraIngredients.map((extra) => (
                                                             <li key={extra.id}>
-                                                                <span className='text-sm text-accent'>
+                                                                <span className='text-sm text-primary'>
                                                                     {extra.name} {formatCurrency(extra.price)}
                                                                 </span>
                                                             </li>
@@ -55,14 +53,14 @@ const CartItems = () => {
                                                     </ul>
                                                 </div>
                                             )}
-                                            <span className='absolute right-0 top-0 text-sm text-black'>
+                                            <span className='absolute right-0 top-0 text-sm text-primary'>
                                                 x{item.quantity}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                                 <div className='flex-1 flex items-center gap-4 justify-end'>
-                                    <strong className='text-black '>
+                                    <strong className='text-primary '>
                                         {formatCurrency(item.basePrice)}
                                     </strong>
                                     <Button
