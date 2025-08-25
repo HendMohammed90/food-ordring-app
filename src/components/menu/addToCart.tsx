@@ -24,11 +24,14 @@ import { ProductWithRelations } from "@/types/product"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { addToCart, clearCart, removeFromCart, selectCartItems } from "@/redux/cartSlice"
 import { AppDispatch } from "@/redux/store"
+import { getItemQuantity } from "@/lib/cart"
 
 
 
 const AddToCart = ({ item }: { item: ProductWithRelations }) => {
     const cart = useAppSelector(selectCartItems);
+    const quantity = getItemQuantity(item.id , cart);
+    // const quantity = cart.find((item) => item.id === item.id)?.quantity || 0;
     const dispatch = useAppDispatch<AppDispatch>();
 
     const defaultSize = cart.find((element) => element.id === item.id)?.size
@@ -108,11 +111,11 @@ const AddToCart = ({ item }: { item: ProductWithRelations }) => {
                     </div>
 
                     <DialogFooter>
-                        <Button variant="outline" className={`${buttonVariants({
+                        {quantity === 0 ? <Button variant="outline" className={`${buttonVariants({
                             size: 'lg', variant: 'outline'
                         })} space-x-2 !px-8 !rounded-full w-full uppercase bg-chart-5 text-background hover:text-background hover:bg-chart-1 cursor-pointer`}
                             onClick={handelAddToCart}
-                        >Add to cart {formatCurrency(totalPrice)}</Button>
+                        >Add to cart {formatCurrency(totalPrice)}</Button> : <ChooseQuantity quantity={quantity} item={item} selectedSize={selectedSize} selectedExtras={selectedExtras} />}
                     </DialogFooter>
 
                 </DialogContent>
@@ -176,3 +179,56 @@ function Extras({ extras, selectedExtras, setSelectedExtras }:
 
     )
 }
+
+
+const ChooseQuantity = ({
+    quantity,
+    item,
+    selectedExtras,
+    selectedSize,
+}: {
+    quantity: number;
+    selectedExtras: Extra[];
+    selectedSize: Size;
+    item: ProductWithRelations;
+}) => {
+    const dispatch = useAppDispatch();
+    return (
+        <div className='flex items-center flex-col gap-2 mt-4 w-full'>
+            <div className='flex items-center justify-center gap-2'>
+                <Button
+                    variant='outline'
+                    onClick={() => dispatch(removeFromCart({ id: item.id }))}
+                >
+                    -
+                </Button>
+                <div>
+                    <span className='text-black'>{quantity} in cart</span>
+                </div>
+                <Button
+                    variant='outline'
+                    onClick={() =>
+                        dispatch(
+                            addToCart({
+                                basePrice: item.basePrice,
+                                id: item.id,
+                                image: item.image,
+                                name: item.name,
+                                extraIngredients: selectedExtras,
+                                size: selectedSize,
+                            })
+                        )
+                    }
+                >
+                    +
+                </Button>
+            </div>
+            <Button
+                size='sm'
+                onClick={() => dispatch(removeFromCart({ id: item.id }))}
+            >
+                Remove
+            </Button>
+        </div>
+    );
+};

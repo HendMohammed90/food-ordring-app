@@ -27,7 +27,7 @@ const cartSlice = createSlice({
     initialState,
     reducers: {
         addToCart: (state, action: PayloadAction<CartItem>) => {
-            console.log("Action payload before:", action.payload); // Debugging
+            // console.log("Action payload before:", action.payload); // Debugging
             const existingItem = state.items.find(
                 (item) => item.id === action.payload.id
             );
@@ -38,7 +38,7 @@ const cartSlice = createSlice({
             } else {
                 state.items.push({ ...action.payload, quantity: 1 });
             }
-            console.log("Action payload after:", action.payload); // Debugging
+            // console.log("Action payload after:", action.payload); // Debugging
         },
         removeFromCart: (state, action: PayloadAction<{ id: string }>) => {
             // state.items = state.items.filter((i) => i.id !== action.payload);
@@ -62,6 +62,6 @@ export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;
 // export const selectCartItems = (state: RootState) => state.cart.items;
 export const selectCartItems = (state: RootState) => {
-    console.log("Cart State:", state.cart.items);
+    // console.log("Cart State:", state.cart.items);
     return state.cart.items;
 };
