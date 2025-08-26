@@ -10,7 +10,7 @@ import CheckoutForm from './_components/CheckoutForm';
 
 const CartPage = () => {
     return (
-        <main>
+        <main className='min-h-screen'>
             <section className='section-gap' id={Routes.CART}>
                 <div className='container'>
                     <MainHeading subTitle="your order is here" title="Shopping Cart" />

@@ -8,13 +8,19 @@ import { Button } from '@/components/ui/button'
 import { Trash2 } from 'lucide-react'
 import { useAppDispatch } from '@/redux/hooks';
 import { removeFromCart } from '@/redux/cartSlice';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { deliveryFee, getTotalAmount } from "@/lib/cart"
 
 const CartItems = () => {
     const cartData = useAppSelector(selectCartItems);
     const dispatch = useAppDispatch();
     const subTotal = getTotalAmount(cartData);
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            localStorage.setItem('cartItems', JSON.stringify(cartData));
+        }
+    }, [cartData]);
 
     // console.log("Cart Data:", cartData);
     return (

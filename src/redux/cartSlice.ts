@@ -3,6 +3,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 import { Extra, Size } from "../../prisma/generated/prisma";
+import { setCookie, getCookie, deleteCookie } from 'cookies-next';
 
 export type CartItem = {
     id: string;
@@ -17,9 +18,10 @@ export type CartItem = {
 type CartState = {
     items: CartItem[];
 };
+const initCartItems = getCookie('cartItems');
 
 const initialState: CartState = {
-    items: [],
+    items: initCartItems ? JSON.parse(initCartItems as string) : [],
 };
 
 const cartSlice = createSlice({
