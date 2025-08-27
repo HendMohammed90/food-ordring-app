@@ -1,7 +1,8 @@
 import { formatCurrency } from "@/lib/formatters"
 import Image from 'next/image';
-import AddToCart from "./addToCart";
+
 import { ProductWithRelations } from "@/types/product";
+import AddToCart from "./AddToCart";
 
 
 const MenuItem = ({ item }: { item: ProductWithRelations }) => {
@@ -12,7 +13,9 @@ const MenuItem = ({ item }: { item: ProductWithRelations }) => {
                     src={item.image}
                     alt={item.name}
                     fill
+                    sizes="( max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover"
+                    property="false"
                 />
             </div>
             <div className="space-y-3">
