@@ -10,6 +10,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import { removeFromCart } from '@/redux/cartSlice';
 import React, { useEffect } from 'react';
 import { deliveryFee, getTotalAmount } from "@/lib/cart"
+import { saveCart } from '@/lib/cookieCart';
 
 const CartItems = () => {
     const cartData = useAppSelector(selectCartItems);
@@ -18,11 +19,10 @@ const CartItems = () => {
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-            localStorage.setItem('cartItems', JSON.stringify(cartData));
+            saveCart(cartData);
         }
     }, [cartData]);
 
-    // console.log("Cart Data:", cartData);
     return (
         <div>
             {cartData && cartData.length > 0 ? (
@@ -38,6 +38,7 @@ const CartItems = () => {
                                                 className='object-contain'
                                                 alt={item.name}
                                                 fill
+                                                property="false"
                                             />
                                         </div>
                                         <div>

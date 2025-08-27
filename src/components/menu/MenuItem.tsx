@@ -13,7 +13,9 @@ const MenuItem = ({ item }: { item: ProductWithRelations }) => {
                     src={item.image}
                     alt={item.name}
                     fill
+                    sizes="( max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover"
+                    property="false"
                 />
             </div>
             <div className="space-y-3">

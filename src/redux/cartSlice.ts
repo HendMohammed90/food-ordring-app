@@ -3,7 +3,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 import { Extra, Size } from "../../prisma/generated/prisma";
-import { setCookie, getCookie, deleteCookie } from 'cookies-next';
+import { loadCart, saveCart } from "@/lib/cookieCart";
 
 export type CartItem = {
     id: string;
@@ -18,10 +18,10 @@ export type CartItem = {
 type CartState = {
     items: CartItem[];
 };
-const initCartItems = getCookie('cartItems');
+const initCartItems = loadCart();
 
 const initialState: CartState = {
-    items: initCartItems ? JSON.parse(initCartItems as string) : [],
+    items: initCartItems || [],
 };
 
 const cartSlice = createSlice({
@@ -37,8 +37,10 @@ const cartSlice = createSlice({
                 existingItem.quantity = (existingItem.quantity || 0) + 1;
                 existingItem.size = action.payload.size;
                 existingItem.extraIngredients = action.payload.extraIngredients;
+                saveCart(state.items);
             } else {
                 state.items.push({ ...action.payload, quantity: 1 });
+                saveCart(state.items);
             }
             // console.log("Action payload after:", action.payload); // Debugging
         },
@@ -49,13 +51,18 @@ const cartSlice = createSlice({
                 existing.quantity = (existing.quantity ?? 0) - 1;
                 if (existing.quantity === 0) {
                     state.items = state.items.filter((i) => i.id !== action.payload.id);
+                    saveCart(state.items);
+
                 }
             } else {
                 state.items = state.items.filter((i) => i.id !== action.payload.id);
+                saveCart(state.items);
             }
         },
         clearCart: (state) => {
             state.items = [];
+            saveCart(state.items);
+
         },
     },
 });

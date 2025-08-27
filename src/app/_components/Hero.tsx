@@ -38,7 +38,7 @@ const Hero = () => {
                     </div>
                 </div>
                 <div className="relative md:h-[24rem] md:w-[24rem] hidden md:block">
-                    <Image src={"/assets/images/pizza-hero.png"} alt="PizzaImg" fill loading="eager" priority className="object-contain"/>
+                    <Image src={"/assets/images/pizza-hero.png"} alt="PizzaImg" fill loading="eager" priority className="object-contain" property="false"/>
                 </div>
             </div>
         </section >
