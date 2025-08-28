@@ -14,13 +14,13 @@ export default function SignUpPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-    
-    // TODO: Implement registration logic
+
+
     console.log('Sign up attempt:', formData);
   };
 
@@ -32,11 +32,11 @@ export default function SignUpPage() {
   };
 
   return (
-    <main className="p-8">
-      <div className="container mx-auto max-w-md">
+    <main className="p-8 element-center">
+      <div className="container mx-auto max-w-1/2">
         <div className="bg-card p-8 rounded-lg shadow-lg">
           <h1 className="text-3xl font-bold text-center mb-8">Sign Up</h1>
-          
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -53,7 +53,7 @@ export default function SignUpPage() {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
                 Email Address
@@ -69,7 +69,7 @@ export default function SignUpPage() {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-2">
                 Password
@@ -85,7 +85,7 @@ export default function SignUpPage() {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
                 Confirm Password
@@ -101,7 +101,7 @@ export default function SignUpPage() {
                 required
               />
             </div>
-            
+
             <button
               type="submit"
               className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary/90 transition-colors"
@@ -109,22 +109,22 @@ export default function SignUpPage() {
               Sign Up
             </button>
           </form>
-          
+
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               Already have an account?{' '}
-              <Link 
-                href={`/${Routes.AUTH}/${Pages.LOGIN}`} 
+              <Link
+                href={`/${Routes.AUTH}/${Pages.LOGIN}`}
                 className="text-primary hover:underline"
               >
                 Sign in here
               </Link>
             </p>
           </div>
-          
+
           <div className="mt-4 text-center">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="text-sm text-muted-foreground hover:text-primary"
             >
               ← Back to Home

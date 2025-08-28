@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Routes, Pages } from "@/constants/enums";
+import { signIn } from "next-auth/react";
 
 export default function SignInPage() {
   const [formData, setFormData] = useState({
@@ -10,10 +11,22 @@ export default function SignInPage() {
     password: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement authentication logic
-    console.log('Sign in attempt:', formData);
+
+    const result = await signIn("credentials", {
+      redirect: false, // Prevent automatic redirection
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (result?.error) {
+      alert(`Error: ${result.error}`);
+    } else {
+      alert("Sign-in successful!");
+      // Redirect to a protected page or dashboard
+      window.location.href = "/";
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,11 +37,11 @@ export default function SignInPage() {
   };
 
   return (
-    <main className="p-8">
-      <div className="container mx-auto max-w-md">
+    <main className="p-8 element-center">
+      <div className="container mx-auto max-w-xl">
         <div className="bg-card p-8 rounded-lg shadow-lg">
           <h1 className="text-3xl font-bold text-center mb-8">Sign In</h1>
-          
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
@@ -45,7 +58,7 @@ export default function SignInPage() {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-2">
                 Password
@@ -61,7 +74,7 @@ export default function SignInPage() {
                 required
               />
             </div>
-            
+
             <button
               type="submit"
               className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary/90 transition-colors"
@@ -69,22 +82,22 @@ export default function SignInPage() {
               Sign In
             </button>
           </form>
-          
+
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               Don't have an account?{' '}
-              <Link 
-                href={`/${Routes.AUTH}/${Pages.Register}`} 
+              <Link
+                href={`/${Routes.AUTH}/${Pages.Register}`}
                 className="text-primary hover:underline"
               >
                 Sign up here
               </Link>
             </p>
           </div>
-          
+
           <div className="mt-4 text-center">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="text-sm text-muted-foreground hover:text-primary"
             >
               ← Back to Home
