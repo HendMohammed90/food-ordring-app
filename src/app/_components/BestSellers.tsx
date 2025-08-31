@@ -33,7 +33,6 @@ const BestSellers = async ({ bestSellerData }: { bestSellerData: ProductWithRela
     // });
 
     // console.log(extraData);
-
     return (
         <section>
             <div className="container">

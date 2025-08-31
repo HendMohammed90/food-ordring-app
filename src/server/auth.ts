@@ -3,6 +3,7 @@ import { NextAuthOptions } from "next-auth";
 import { Environments, Pages, Routes } from "@/constants/enums";
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { db } from "@/lib/prisma";
+import { login } from "./_actions/auth";
 export const authOptions: NextAuthOptions = {
     debug: process.env.NODE_ENV === Environments.DEV,
     secret: process.env.NEXTAUTH_SECRET,
@@ -16,22 +17,13 @@ export const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "text", placeholder: "your.email address" },
                 password: { label: "Password", type: "password" },
             },
-            authorize(credentials) {
-                const user = credentials;
-                return {
-                    id: crypto.randomUUID(),
-                    ...user
-                };
-                // if (!credentials?.email || !credentials?.password) {
-                //     throw new Error("Email and password are required");
-                // }
-
-                // // Replace this with your own user authentication logic
-                // if (credentials.email === "test@gmail.com" && credentials.password === "123456") {
-                //     return { id: "1", name: "Test User", email: credentials.email };
-                // }
-
-                // throw new Error("Invalid email or password");
+            authorize: async (credentials) => {
+                const res = await login(credentials);
+                if (res.status !== 200 && res.user) {
+                    return res.user;
+                } else {
+                    throw new Error(res.message || "Login failed");
+                }
             },
         }),
     ],

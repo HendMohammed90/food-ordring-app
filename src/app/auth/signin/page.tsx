@@ -4,12 +4,29 @@ import { useState } from "react";
 import Link from "next/link";
 import { Routes, Pages } from "@/constants/enums";
 import { signIn } from "next-auth/react";
+import { Eye, EyeClosed } from "lucide-react";
 
 export default function SignInPage() {
+
+  const [state, setState] = useState({ showPassword: false });
+  const [error, setError] = useState<string | null>(null);
+  const { showPassword } = state;
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+
+  const handleClickShowPassword = () =>
+    setState((prevState) => ({
+      ...prevState,
+      showPassword: !prevState.showPassword,
+    }));
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +38,9 @@ export default function SignInPage() {
     });
 
     if (result?.error) {
-      alert(`Error: ${result.error}`);
+      const errors = JSON.parse(result.error);
+      setError(errors[0].message);
+      console.log("Sign-in error:", errors[0].message);
     } else {
       alert("Sign-in successful!");
       // Redirect to a protected page or dashboard
@@ -59,22 +78,34 @@ export default function SignInPage() {
               />
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2">
+            <div className="relative flex  items-center">
+              <label htmlFor="password" className="text-sm font-medium absolute left-0 -top-5">
                 Password
               </label>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                className="mt-2 w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                 placeholder="Your password"
                 required
               />
+              <button
+                type="button"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                className={`absolute right-3 cursor-pointer ${formData.password ? '' : 'hidden'}`}
+              >
+                {showPassword ? (
+                  <Eye className="h-4 w-4" />
+                ) : (
+                  <EyeClosed className="h-4 w-4" />
+                )}
+              </button>
             </div>
-
+            {error && <p className="text-sm text-red-600">{error}</p>}
             <button
               type="submit"
               className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary/90 transition-colors"

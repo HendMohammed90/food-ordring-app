@@ -19,9 +19,8 @@ export default function SignUpPage() {
       alert('Passwords do not match!');
       return;
     }
-
-
     console.log('Sign up attempt:', formData);
+
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
