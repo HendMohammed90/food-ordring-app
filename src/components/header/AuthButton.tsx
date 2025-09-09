@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { Routes, Pages } from '@/constants/enums'
 import Link from '../link'
 import { Button, buttonVariants } from '../ui/button'
 import { User, LogOut, ChevronDown } from 'lucide-react'
 import { toast } from 'sonner'
+import { performLogout, forceLogoutRedirect } from '@/lib/auth-utils'
 
 const AuthButton = () => {
   const { data: session, status } = useSession()
@@ -14,13 +15,24 @@ const AuthButton = () => {
 
   const handleSignOut = async () => {
     try {
+      // Close dropdown first
+      setShowDropdown(false);
+      
+      // Show loading state
+      toast.loading('Signing out...');
+      
+      // Use comprehensive logout utility
+      await performLogout({
+        redirect: false,
+        callbackUrl: '/',
+      });
+      
+      // Show success message
       toast.success('Signed out successfully!');
-      setTimeout(() => {
-      }, 3000);
-      await signOut({
-        redirect: true,
-        callbackUrl: '/'
-      })
+      
+      // Force clean redirect
+      forceLogoutRedirect('/');
+      
     } catch (error) {
       toast.error('Error signing out');
       console.error('Sign out error:', error)
