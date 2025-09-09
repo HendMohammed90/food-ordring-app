@@ -1,6 +1,6 @@
 import Credentials from "next-auth/providers/credentials";
 import { NextAuthOptions } from "next-auth";
-import { Environments, Pages, Routes } from "@/constants/enums";
+import { Environments, Pages, Routes, UserRole } from "@/constants/enums";
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { db } from "@/lib/prisma";
 import { login } from "./_actions/auth";
@@ -42,7 +42,7 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             if (token) {
                 session.user.id = token.sub!;
-                session.user.role = token.role as string;
+                session.user.role = token.role as UserRole;
             }
             return session;
         },
