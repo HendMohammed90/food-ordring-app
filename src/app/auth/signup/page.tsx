@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Routes, Pages } from "@/constants/enums";
 import { signUp } from "@/server/_actions/auth";
 import { useRouter } from "next/navigation";
+import { toast } from 'sonner';
+
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -16,6 +18,8 @@ export default function SignUpPage() {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const notify = () => toast.success('Account created successfully! Please sign in.');
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +28,7 @@ export default function SignUpPage() {
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match!');
+      toast.error('Passwords do not match!');
       setLoading(false);
       return;
     }
@@ -37,10 +42,13 @@ export default function SignUpPage() {
       
       // Show success message and redirect to login
       setError(null);
-      alert('Account created successfully! Please sign in.');
+      // alert('Account created successfully! Please sign in.');
+      notify();
       router.push(`/${Routes.AUTH}/${Pages.LOGIN}`);
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Something went wrong');
+      const errorMessage = error instanceof Error ? error.message : 'Something went wrong';
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error('Signup error:', error);
     } finally {
       setLoading(false);

@@ -6,6 +6,7 @@ import { Routes, Pages } from '@/constants/enums'
 import Link from '../link'
 import { Button, buttonVariants } from '../ui/button'
 import { User, LogOut, ChevronDown } from 'lucide-react'
+import { toast } from 'sonner'
 
 const AuthButton = () => {
   const { data: session, status } = useSession()
@@ -13,11 +14,15 @@ const AuthButton = () => {
 
   const handleSignOut = async () => {
     try {
+      toast.success('Signed out successfully!');
+      setTimeout(() => {
+      }, 3000);
       await signOut({
         redirect: true,
         callbackUrl: '/'
       })
     } catch (error) {
+      toast.error('Error signing out');
       console.error('Sign out error:', error)
     }
   }

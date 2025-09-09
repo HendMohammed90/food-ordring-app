@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Routes, Pages } from "@/constants/enums";
 import { signIn } from "next-auth/react";
 import { Eye, EyeClosed } from "lucide-react";
+import { toast } from "sonner";
 
 export default function SignInPage() {
 
@@ -52,13 +53,18 @@ export default function SignInPage() {
           errorMessage = result.error;
         }
         setError(errorMessage);
+        toast.error(errorMessage);
         console.log("Sign-in error:", result.error);
       } else if (result?.ok) {
+        toast.success('Signed in successfully!');
         // Redirect to home page after successful login
-        window.location.href = "/";
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1000);
       }
     } catch (error) {
       setError('An unexpected error occurred');
+      toast.error('An unexpected error occurred');
       console.error('Signin error:', error);
     } finally {
       setLoading(false);
