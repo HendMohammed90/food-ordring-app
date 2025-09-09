@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import ReduxProvider from "@/components/providers/ReduxProvider";
+import NextAuthProvider from "@/components/providers/NextAuthProvider";
 
 
 const roboto = Roboto({
@@ -27,11 +28,13 @@ export default function RootLayout({
       <body
         className={roboto.className}
       >
-        <ReduxProvider>
-          <Header />
-          {children}
-          <Footer />
-        </ReduxProvider>
+        <NextAuthProvider>
+          <ReduxProvider>
+            <Header />
+            {children}
+            <Footer />
+          </ReduxProvider>
+        </NextAuthProvider>
       </body>
     </html>
   );

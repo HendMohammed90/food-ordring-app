@@ -1,11 +1,12 @@
 'use client'
 
-import { Routes, Pages } from "@/constants/enums"
+import { Routes } from "@/constants/enums"
 import Link from "../link"
-import { Button, buttonVariants } from "../ui/button"
+import { Button } from "../ui/button"
 import { useState } from "react"
 import { Menu, XIcon } from "lucide-react"
 import CartButton from "./cart-button"
+import AuthButton from "./AuthButton"
 
 const Navbar = () => {
     const [openMenu, setOpenMenu] = useState(false);
@@ -14,11 +15,6 @@ const Navbar = () => {
         { id: crypto.randomUUID(), title: "Menu", href: Routes.MENU },
         { id: crypto.randomUUID(), title: "About", href: Routes.ABOUT },
         { id: crypto.randomUUID(), title: "Contact", href: Routes.CONTACT },
-        {
-            id: crypto.randomUUID(),
-            title: "Login",
-            href: `${Routes.AUTH}/${Pages.LOGIN}`,
-        }
     ]
     return (
         <nav className="flex gap-4 justify-center items-center">
@@ -43,11 +39,14 @@ const Navbar = () => {
                 </Button>
                 {links.map((link) => (
                     <li key={link.id}>
-                        <Link href={`/${link.href}`} className={`${link.href === `${Routes.AUTH}/${Pages.LOGIN}` ? `${buttonVariants({ size: 'lg', variant: 'outline' })} !px-8 !rounded-full bg-chart-5 text-background hover:text-background hover:bg-chart-1` : "text-chart-5 hover:text-chart-1  duration-200 transition-colors"} font-semibold`}>
+                        <Link href={`/${link.href}`} className="text-chart-5 hover:text-chart-1 duration-200 transition-colors font-semibold">
                             {link.title}
                         </Link>
                     </li>
                 ))}
+                <li>
+                    <AuthButton />
+                </li>
             </ul>
             <CartButton />
         </nav>

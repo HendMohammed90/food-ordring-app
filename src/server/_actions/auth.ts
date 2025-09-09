@@ -1,33 +1,78 @@
 "use server"
 
 import { db } from "@/lib/prisma";
-import { LoginSchema } from "@/validations/auth";
+import { LoginSchema, SignUpSchema } from "@/validations/auth";
 import bcrypt from "bcrypt";
 
 export const login = async (credentials: Record<"email" | "password", string> | undefined) => {
     const result = LoginSchema.safeParse(credentials);
     if (!result.success) {
-        const formattedErrors = result.error.message;
+        const formattedErrors = result.error.issues.map(err => err.message).join(", ");
         throw new Error(formattedErrors);
     }
+    
     try {
-        const user = db.user.findUnique({
+        const user = await db.user.findUnique({
             where: { email: result.data.email }
         });
+        
         if (!user) {
-            // console.log()
-            return { message: "Invalid email or password", status: 401 }
+            throw new Error("Invalid email or password");
         }
-        const hashedPassword = result.data.password;
-        const isValidPassword = await bcrypt.compare(result.data.password, hashedPassword);
+        
+        const isValidPassword = await bcrypt.compare(result.data.password, user.password);
         if (!isValidPassword) {
-            return { message: "Invalid email or password", status: 401 }
+            throw new Error("Invalid email or password");
         }
-        //eslint-disable-next-line @typescript-eslint/no-unused-vars
-        // const { password, ...userWithoutPassword } = user;
-        return { user, status: 200, message: "Login successful" };
+        
+        // Remove password from user object for security
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
     } catch (error) {
-        return { message: "Something went wrong", status: 500 }
+        console.error("Login error:", error);
+        throw new Error(error instanceof Error ? error.message : "Something went wrong");
+    }
+}
+
+export const signUp = async (data: {
+    name: string;
+    email: string;
+    password: string;
+}) => {
+    const result = SignUpSchema.safeParse(data);
+    if (!result.success) {
+        const formattedErrors = result.error.issues.map(err => err.message).join(", ");
+        throw new Error(formattedErrors);
+    }
+    
+    try {
+        // Check if user already exists
+        const existingUser = await db.user.findUnique({
+            where: { email: result.data.email }
+        });
+        
+        if (existingUser) {
+            throw new Error("User with this email already exists");
+        }
+        
+        // Hash password
+        const hashedPassword = await bcrypt.hash(result.data.password, 12);
+        
+        // Create user
+        const user = await db.user.create({
+            data: {
+                name: result.data.name,
+                email: result.data.email,
+                password: hashedPassword,
+            }
+        });
+        
+        // Remove password from response
+        const { password, ...userWithoutPassword } = user;
+        return { user: userWithoutPassword, message: "User created successfully" };
+    } catch (error) {
+        console.error("Signup error:", error);
+        throw new Error(error instanceof Error ? error.message : "Something went wrong");
     }
 }
 

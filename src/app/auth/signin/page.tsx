@@ -10,6 +10,7 @@ export default function SignInPage() {
 
   const [state, setState] = useState({ showPassword: false });
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const { showPassword } = state;
   const [formData, setFormData] = useState({
     email: '',
@@ -30,21 +31,37 @@ export default function SignInPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
 
-    const result = await signIn("credentials", {
-      redirect: false, // Prevent automatic redirection
-      email: formData.email,
-      password: formData.password,
-    });
+    try {
+      const result = await signIn("credentials", {
+        redirect: false, // Prevent automatic redirection
+        email: formData.email,
+        password: formData.password,
+      });
 
-    if (result?.error) {
-      const errors = JSON.parse(result.error);
-      setError(errors[0].message);
-      console.log("Sign-in error:", errors[0].message);
-    } else {
-      alert("Sign-in successful!");
-      // Redirect to a protected page or dashboard
-      window.location.href = "/";
+      if (result?.error) {
+        // Handle different types of NextAuth errors
+        let errorMessage = "Sign in failed";
+        if (result.error === "CredentialsSignin") {
+          errorMessage = "Invalid email or password";
+        } else if (result.error.includes("Invalid email or password")) {
+          errorMessage = "Invalid email or password";
+        } else {
+          errorMessage = result.error;
+        }
+        setError(errorMessage);
+        console.log("Sign-in error:", result.error);
+      } else if (result?.ok) {
+        // Redirect to home page after successful login
+        window.location.href = "/";
+      }
+    } catch (error) {
+      setError('An unexpected error occurred');
+      console.error('Signin error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -108,9 +125,10 @@ export default function SignInPage() {
             {error && <p className="text-sm text-red-600">{error}</p>}
             <button
               type="submit"
-              className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary/90 transition-colors"
+              disabled={loading}
+              className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign In
+              {loading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
 

@@ -3,24 +3,48 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Routes, Pages } from "@/constants/enums";
+import { signUp } from "@/server/_actions/auth";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
 
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match!');
+      setError('Passwords do not match!');
+      setLoading(false);
       return;
     }
-    console.log('Sign up attempt:', formData);
 
+    try {
+      await signUp({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
+      
+      // Show success message and redirect to login
+      setError(null);
+      alert('Account created successfully! Please sign in.');
+      router.push(`/${Routes.AUTH}/${Pages.LOGIN}`);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Something went wrong');
+      console.error('Signup error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,11 +125,14 @@ export default function SignUpPage() {
               />
             </div>
 
+            {error && <p className="text-sm text-red-600">{error}</p>}
+            
             <button
               type="submit"
-              className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary/90 transition-colors"
+              disabled={loading}
+              className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign Up
+              {loading ? 'Creating Account...' : 'Sign Up'}
             </button>
           </form>
 

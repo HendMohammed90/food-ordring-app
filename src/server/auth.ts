@@ -18,17 +18,34 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Password", type: "password" },
             },
             authorize: async (credentials) => {
-                const res = await login(credentials);
-                if (res.status !== 200 && res.user) {
-                    return res.user;
-                } else {
-                    throw new Error(res.message || "Login failed");
+                try {
+                    const user = await login(credentials);
+                    return user;
+                } catch (error) {
+                    console.error("NextAuth authorize error:", error);
+                    // Throw the error to be handled by NextAuth's error system
+                    throw new Error(error instanceof Error ? error.message : "Authentication failed");
                 }
             },
         }),
     ],
     pages: {
         signIn: `/${Routes.AUTH}/${Pages.LOGIN}`, // Redirect to your our sign-in page
+    },
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.role = user.role;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            if (token) {
+                session.user.id = token.sub!;
+                session.user.role = token.role as string;
+            }
+            return session;
+        },
     },
     adapter: PrismaAdapter(db),
 };
